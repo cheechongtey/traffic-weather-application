@@ -1,15 +1,33 @@
-import { Controller, Get, HttpStatus, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Query,
+  Res,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { LocationService } from './location.service';
 import { Response } from 'express';
+
+import GetDateTimeQuery from './dto/GetLocationDateTime';
 
 @Controller('location')
 export class LocationController {
   constructor(private service: LocationService) {}
 
   @Get('/')
-  async getTrafficLocation(@Req() req: Request, @Res() res: Response) {
-    const resp = await this.service.getTrafficLocation();
+  @UsePipes(new ValidationPipe())
+  async getTrafficLocation(
+    @Query() query: GetDateTimeQuery,
+    @Res() res: Response,
+  ) {
+    const { dateTime } = query;
 
-    return res.status(HttpStatus.OK).json(resp);
+    const trafficLocationData = await this.service.getTrafficLocation(dateTime);
+    // const hydatedData =
+    //   this.service.hydrateTrafficCamLocation(trafficLocationData);
+
+    return res.status(HttpStatus.OK).json(trafficLocationData);
   }
 }

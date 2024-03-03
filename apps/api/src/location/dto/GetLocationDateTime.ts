@@ -1,5 +1,5 @@
 import { IsNotEmpty, Validate } from 'class-validator';
-import { IsDateTime } from 'src/validator/isDateTime';
+import { IsDateTime } from '@/common/validator/isDateTime';
 
 export default class GetDateTimeQuery {
   @Validate(IsDateTime)

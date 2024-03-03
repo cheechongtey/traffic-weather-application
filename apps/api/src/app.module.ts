@@ -10,7 +10,7 @@ import { PersistenceModule } from './persistence/persistence.module';
 import { LocationModule } from './location/location.module';
 import { HttpModule } from './http/http.module';
 import { APP_FILTER } from '@nestjs/core';
-import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 @Module({
   imports: [

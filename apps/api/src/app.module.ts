@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validationSchemaForEnv } from './config/environment-variables';
 import { PersistenceModule } from './persistence/persistence.module';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { PersistenceModule } from './persistence/persistence.module';
       validationSchema: validationSchemaForEnv,
     }),
     PersistenceModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

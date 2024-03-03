@@ -13,6 +13,8 @@ import { Response } from 'express';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GetDateTimeQuery from './dto/GetLocationDateTime';
+import { get } from 'radash';
+import { TrafficCameraData } from './location.type';
 
 @Controller('location')
 export class LocationController {
@@ -32,12 +34,23 @@ export class LocationController {
 
     if (cachedResponse) {
       console.log('Found cache');
-      return res.status(HttpStatus.OK).json(cachedResponse);
+      const cameraData = get<TrafficCameraData[]>(
+        cachedResponse,
+        'items.0.cameras',
+        [],
+      );
+      const data = await this.service.hydrateTrafficCamLocation(cameraData);
+      return res.status(HttpStatus.OK).json(data);
     }
 
     const trafficLocationData = await this.service.getTrafficLocation(dateTime);
-    // const hydatedData =
-    //   this.service.hydrateTrafficCamLocation(trafficLocationData);
+    const cameraData = get<TrafficCameraData[]>(
+      trafficLocationData,
+      'items.0.cameras',
+      [],
+    );
+    const hydratedData = this.service.hydrateTrafficCamLocation(cameraData);
+    console.log(hydratedData);
 
     await this.cacheManager.set(`location-${dateTime}`, trafficLocationData);
 

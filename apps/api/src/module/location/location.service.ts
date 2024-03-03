@@ -1,7 +1,15 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
-import { TrafficLocationApi } from './location.type';
+import { firstValueFrom, map, retry, timer } from 'rxjs';
+
+import {
+  BatchReverseGeocodingCoordinate,
+  BatchReverseGeocodingJobApiResponse,
+  TrafficCameraData,
+  TrafficLocationApi,
+} from './location.type';
+import { chunkArray } from '@/common/helper/utils';
+import endpoints from '@/common/endpoints';
 
 @Injectable()
 export class LocationService {
@@ -9,21 +17,74 @@ export class LocationService {
 
   async getTrafficLocation(dateTime: string): Promise<TrafficLocationApi> {
     const { data } = await firstValueFrom(
-      this.httpService.get<TrafficLocationApi>(
-        'https://api.data.gov.sg/v1/transport/traffic-images',
-        {
-          params: {
-            date_time: dateTime,
-          },
+      this.httpService.get<TrafficLocationApi>(endpoints.trafficImage, {
+        params: {
+          date_time: dateTime,
         },
-      ),
+      }),
     );
     return data;
   }
 
-  async hydrateTrafficCamLocation(trafficData: TrafficLocationApi) {
-    console.log(trafficData);
-    // const { cameras } = trafficData;
-    // const camerasChunk =
+  async hydrateTrafficCamLocation(trafficData: TrafficCameraData[]) {
+    // Chunk cam location data into 10
+    const chunkedCamData = chunkArray<TrafficCameraData>(trafficData, 10);
+    const newData = [chunkedCamData[0]];
+    const finalData = await Promise.all(
+      newData.map(async (item) => {
+        const positions: BatchReverseGeocodingCoordinate[] = item.flatMap(
+          (x) => ({
+            lat: x.location.latitude,
+            lon: x.location.longitude,
+          }),
+        );
+        const pendingBatchResp = await this.getReverseGeocoding(positions);
+        const batchResp = await this.getReverseGeoPendingJob(
+          pendingBatchResp.url,
+        );
+        console.log(batchResp);
+        // console.log(resp);
+
+        return batchResp;
+      }),
+    );
+
+    return finalData;
+  }
+
+  async getReverseGeocoding(positions: BatchReverseGeocodingCoordinate[]) {
+    const { data } = await firstValueFrom(
+      this.httpService.post<BatchReverseGeocodingJobApiResponse>(
+        endpoints.geopifyReverseGeo + '&type=street',
+        positions,
+      ),
+    );
+
+    return data;
+  }
+
+  async getReverseGeoPendingJob(url: string) {
+    const instance = this.httpService.get(url).pipe(
+      map((resp) => {
+        if (resp.data.status && resp.data.status === 'pending') {
+          throw resp.data.status;
+        }
+
+        return resp.data;
+      }),
+      retry({
+        count: 5,
+        delay(_, retryIndex) {
+          console.log(retryIndex);
+          const interval = 200;
+          const delay = Math.pow(2, retryIndex - 1) * interval;
+          return timer(delay);
+        },
+        resetOnSuccess: false,
+      }),
+    );
+    const response = await firstValueFrom(instance);
+
+    return response;
   }
 }

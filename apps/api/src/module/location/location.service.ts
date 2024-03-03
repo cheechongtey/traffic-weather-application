@@ -2,12 +2,14 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom, map, retry, timer } from 'rxjs';
 
-import {
-  BatchReverseGeocodingCoordinate,
-  BatchReverseGeocodingJobApiResponse,
+import type {
   TrafficCameraData,
   TrafficLocationApi,
-} from './location.type';
+} from './type/traffic-api.type';
+import type {
+  BatchReverseGeocodingCoordinate,
+  BatchReverseGeocodingJobApiResponse,
+} from './type/geo-api.type';
 import { chunkArray } from '@/common/helper/utils';
 import endpoints from '@/common/endpoints';
 
@@ -64,27 +66,37 @@ export class LocationService {
   }
 
   async getReverseGeoPendingJob(url: string) {
-    const instance = this.httpService.get(url).pipe(
-      map((resp) => {
-        if (resp.data.status && resp.data.status === 'pending') {
-          throw resp.data.status;
-        }
+    try {
+      const instance = this.httpService.get(url).pipe(
+        map((resp) => {
+          if (resp.data.status && resp.data.status === 'pending') {
+            throw new Error('Maximum attempt on retries');
+          }
 
-        return resp.data;
-      }),
-      retry({
-        count: 5,
-        delay(_, retryIndex) {
-          console.log(retryIndex);
-          const interval = 200;
-          const delay = Math.pow(2, retryIndex - 1) * interval;
-          return timer(delay);
-        },
-        resetOnSuccess: false,
-      }),
-    );
-    const response = await firstValueFrom(instance);
+          return resp.data;
+        }),
+        retry({
+          count: 8,
+          delay(_, retryIndex) {
+            console.log(retryIndex);
+            const interval = 200;
+            const delay = Math.pow(2, retryIndex - 1) * interval;
+            return timer(delay);
+          },
+          resetOnSuccess: false,
+        }),
+      );
 
-    return response;
+      const response = await firstValueFrom(instance);
+
+      return response;
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error(e.message);
+      }
+      return [];
+    }
   }
+
+  async storeLocationCache() {}
 }

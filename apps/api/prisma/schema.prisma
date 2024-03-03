@@ -15,3 +15,21 @@ model User {
   email String  @unique
   name  String?
 }
+
+model Logs {
+  id    Int     @id @default(autoincrement())
+  uuid  String  
+  info  String 
+  createdAt DateTime @default(now())
+}
+
+model SearchHistory {
+  id    Int     @id @default(autoincrement())
+  uuid  String  
+  datetime DateTime 
+  location_name String 
+  location_coordinates String
+  createdAt DateTime @default(now())
+
+  @@index([datetime, location_name])
+}

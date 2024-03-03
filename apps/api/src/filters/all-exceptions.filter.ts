@@ -25,10 +25,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.response.status
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message =
+    let message =
       exception instanceof AxiosError
         ? exception.message
         : 'Internal Server Error';
+
+    if (exception instanceof HttpException) {
+      message = exception.getResponse()?.['message'];
+    }
+
     const responseBody = {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),

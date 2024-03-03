@@ -1,26 +1,29 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { firstValueFrom } from 'rxjs';
+import { TrafficLocationApi } from './location.type';
 
 @Injectable()
 export class LocationService {
-  async getTrafficLocation(): Promise<any> {
-    try {
-      const resp = await fetch(
+  constructor(private readonly httpService: HttpService) {}
+
+  async getTrafficLocation(dateTime: string): Promise<TrafficLocationApi> {
+    const { data } = await firstValueFrom(
+      this.httpService.get<TrafficLocationApi>(
         'https://api.data.gov.sg/v1/transport/traffic-images',
         {
-          body: JSON.stringify({ date_time: '2024-01-01 14:30:00' }),
+          params: {
+            date_time: dateTime,
+          },
         },
-      );
-      console.log(resp.ok);
-      if (!resp.ok) {
-        throw new Error('Failed to fetch traffic images');
-      }
-      const data = await resp.json();
-      console.log(data);
-      // Store into cache
-      return data;
-    } catch (error) {
-      console.error(error);
-      // Loggging and send to sentry
-    }
+      ),
+    );
+    return data;
+  }
+
+  async hydrateTrafficCamLocation(trafficData: TrafficLocationApi) {
+    console.log(trafficData);
+    // const { cameras } = trafficData;
+    // const camerasChunk =
   }
 }

@@ -14,7 +14,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import GetDateTimeQuery from './dto/GetLocationDateTime';
 import { get } from 'radash';
-import { TrafficCameraData } from './location.type';
+import { TrafficCameraData } from './type/traffic-api.type';
 
 @Controller('location')
 export class LocationController {

@@ -17,19 +17,19 @@ model User {
 }
 
 model Logs {
-  id    Int     @id @default(autoincrement())
-  uuid  String  
-  info  String 
+  id        Int      @id @default(autoincrement())
+  uuid      String
+  info      String
   createdAt DateTime @default(now())
 }
 
 model SearchHistory {
-  id    Int     @id @default(autoincrement())
-  uuid  String  
-  datetime DateTime 
-  location_name String 
+  id                   Int      @id @default(autoincrement())
+  uuid                 String
+  datetime             DateTime @default(now()) @db.Timestamptz(3)
+  location_name        String
   location_coordinates String
-  createdAt DateTime @default(now())
+  createdAt            DateTime @default(now())
 
   @@index([datetime, location_name])
 }

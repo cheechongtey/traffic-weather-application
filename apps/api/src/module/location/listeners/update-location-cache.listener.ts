@@ -18,7 +18,7 @@ export class UpdateLocationCacheListener {
 
     // Cache for one 30 days
     await this.cacheManager.set('location-list', locationList, {
-      ttl: 2592000,
+      ttl: 60 * 60 * 24 * 30,
     } as any);
   }
 }

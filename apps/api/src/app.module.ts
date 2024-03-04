@@ -3,6 +3,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule } from '@nestjs/config';
 import * as redisStore from 'cache-manager-redis-store';
 import { APP_FILTER } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,6 +19,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
       isGlobal: true,
       validationSchema: validationSchemaForEnv,
     }),
+    EventEmitterModule.forRoot(),
     PersistenceModule,
     CacheModule.register({
       isGlobal: true,

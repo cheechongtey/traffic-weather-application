@@ -13,6 +13,7 @@ import { LocationModule } from '@/module/location/location.module';
 import { HttpModule } from '@/module/http/http.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { WeatherModule } from '@/module/weather/weather.module';
+import { SearchHistoryModule } from '@/module/search-history/search-history.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { WeatherModule } from '@/module/weather/weather.module';
     HttpModule,
     LocationModule,
     WeatherModule,
+    SearchHistoryModule,
   ],
   controllers: [AppController],
   providers: [

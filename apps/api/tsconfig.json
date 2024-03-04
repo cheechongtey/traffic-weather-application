@@ -5,6 +5,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"] // enables us to use @components/MyComponent
-    }
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
   }
 }

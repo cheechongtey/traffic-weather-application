@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { LocationController } from './location.controller';
 import { LocationService } from './location.service';
 import { HttpModule } from '@nestjs/axios';
+import { UpdateLocationCacheListener } from './listeners/update-location-cache.listener';
 
 @Module({
   imports: [HttpModule],
   controllers: [LocationController],
-  providers: [LocationService],
+  providers: [LocationService, UpdateLocationCacheListener],
 })
 export class LocationModule {}

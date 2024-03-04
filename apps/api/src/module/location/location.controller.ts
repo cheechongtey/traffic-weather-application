@@ -33,14 +33,7 @@ export class LocationController {
     const cachedResponse = await this.cacheManager.get(`location-${dateTime}`);
 
     if (cachedResponse) {
-      console.log('Found cache');
-      const cameraData = get<TrafficCameraData[]>(
-        cachedResponse,
-        'items.0.cameras',
-        [],
-      );
-      const data = await this.service.hydrateTrafficCamLocation(cameraData);
-      return res.status(HttpStatus.OK).json(data);
+      return res.status(HttpStatus.OK).json(cachedResponse);
     }
 
     const trafficLocationData = await this.service.getTrafficLocation(dateTime);
@@ -49,11 +42,14 @@ export class LocationController {
       'items.0.cameras',
       [],
     );
-    const hydratedData = this.service.hydrateTrafficCamLocation(cameraData);
-    console.log(hydratedData);
+    const hydratedData = await this.service.hydrateTrafficCamLocation(
+      cameraData,
+    );
 
-    await this.cacheManager.set(`location-${dateTime}`, trafficLocationData);
+    this.cacheManager.set(`location-${dateTime}`, hydratedData, {
+      ttl: 60 * 60 * 24 * 30,
+    } as any);
 
-    return res.status(HttpStatus.OK).json(trafficLocationData);
+    return res.status(HttpStatus.OK).json(hydratedData);
   }
 }

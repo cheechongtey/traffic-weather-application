@@ -17,7 +17,10 @@ export class WeatherController {
 
   @Get('/')
   @UsePipes(new ValidationPipe())
-  async findWeather(@Query() query: GetWeatherQuery, @Res() res: Response) {
+  async fetchLocationWeatherForecast(
+    @Query() query: GetWeatherQuery,
+    @Res() res: Response,
+  ) {
     const { dateTime, latitude, longitude } = query;
     const resp = await this.service.getWeatherForecast(dateTime, {
       latitude,

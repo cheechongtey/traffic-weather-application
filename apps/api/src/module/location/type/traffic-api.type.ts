@@ -1,3 +1,5 @@
+import { CoordinatesType } from '@/common/type/global';
+
 export type TrafficLocationApi = {
   items: TrafficLocationItemData[];
 };

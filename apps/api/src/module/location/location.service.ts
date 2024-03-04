@@ -1,6 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, flatten } from '@nestjs/common';
 import { firstValueFrom, map, retry, timer } from 'rxjs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 import type {
   TrafficCameraData,
@@ -9,13 +12,21 @@ import type {
 import type {
   BatchReverseGeocodingCoordinate,
   BatchReverseGeocodingJobApiResponse,
+  ReverseGeocodingJobApiResponse,
+  ReverseGeocodingJobCompleteApiResponse,
 } from './type/geo-api.type';
 import { chunkArray } from '@/common/helper/utils';
 import endpoints from '@/common/endpoints';
+import { HydratedTrafficCamData, LocationCache } from './type/location.type';
+import { UpdateLocationCacheEvent } from './events/update-location-cache.event';
 
 @Injectable()
 export class LocationService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private eventEmitter: EventEmitter2,
+    private readonly httpService: HttpService,
+  ) {}
 
   async getTrafficLocation(dateTime: string): Promise<TrafficLocationApi> {
     const { data } = await firstValueFrom(
@@ -30,26 +41,51 @@ export class LocationService {
 
   async hydrateTrafficCamLocation(trafficData: TrafficCameraData[]) {
     // Chunk cam location data into 10
-    const chunkedCamData = chunkArray<TrafficCameraData>(trafficData, 10);
-    const newData = [chunkedCamData[0]];
-    const finalData = await Promise.all(
-      newData.map(async (item) => {
-        const positions: BatchReverseGeocodingCoordinate[] = item.flatMap(
-          (x) => ({
-            lat: x.location.latitude,
-            lon: x.location.longitude,
-          }),
-        );
-        const pendingBatchResp = await this.getReverseGeocoding(positions);
-        const batchResp = await this.getReverseGeoPendingJob(
-          pendingBatchResp.url,
-        );
-        console.log(batchResp);
-        // console.log(resp);
+    const locationCache: LocationCache =
+      (await this.cacheManager.get('location-list')) ?? {};
 
-        return batchResp;
-      }),
+    const chunkedCamData = chunkArray<TrafficCameraData>(trafficData, 10);
+    const newData = [...chunkedCamData];
+
+    const finalData = flatten<HydratedTrafficCamData[][]>(
+      await Promise.all(
+        newData.map(async (items) => {
+          const positions: BatchReverseGeocodingCoordinate[] = items
+            .filter(
+              (x) =>
+                !locationCache[
+                  `${x.location.latitude}_${x.location.longitude}`
+                ],
+            )
+            .flatMap((x) => ({
+              lat: x.location.latitude,
+              lon: x.location.longitude,
+            }));
+
+          if (positions.length !== 0) {
+            const pendingBatchResp = await this.getReverseGeocoding(positions);
+            const addressList = await this.getReverseGeoPendingJob(
+              pendingBatchResp.url,
+            );
+
+            addressList.forEach((item) => {
+              locationCache[`${item.query.lat}_${item.query.lon}`] =
+                item.formatted;
+            });
+          }
+
+          return items.map((item) => ({
+            ...item,
+            location_name:
+              locationCache[
+                `${item.location.latitude}_${item.location.longitude}`
+              ],
+          }));
+        }),
+      ),
     );
+
+    this.storeLocationCache(finalData);
 
     return finalData;
   }
@@ -57,7 +93,7 @@ export class LocationService {
   async getReverseGeocoding(positions: BatchReverseGeocodingCoordinate[]) {
     const { data } = await firstValueFrom(
       this.httpService.post<BatchReverseGeocodingJobApiResponse>(
-        endpoints.geopifyReverseGeo + '&type=street',
+        endpoints.geopifyReverseGeo,
         positions,
       ),
     );
@@ -67,25 +103,25 @@ export class LocationService {
 
   async getReverseGeoPendingJob(url: string) {
     try {
-      const instance = this.httpService.get(url).pipe(
-        map((resp) => {
-          if (resp.data.status && resp.data.status === 'pending') {
-            throw new Error('Maximum attempt on retries');
-          }
+      const instance = this.httpService
+        .get<ReverseGeocodingJobApiResponse>(url)
+        .pipe(
+          map((resp) => {
+            if ('status' in resp.data && resp.data.status === 'pending') {
+              throw new Error('Maximum attempt on retries');
+            }
 
-          return resp.data;
-        }),
-        retry({
-          count: 8,
-          delay(_, retryIndex) {
-            console.log(retryIndex);
-            const interval = 200;
-            const delay = Math.pow(2, retryIndex - 1) * interval;
-            return timer(delay);
-          },
-          resetOnSuccess: false,
-        }),
-      );
+            return resp.data as ReverseGeocodingJobCompleteApiResponse[];
+          }),
+          retry({
+            count: 8,
+            delay(_, retryIndex) {
+              console.log(retryIndex);
+              return timer(1500);
+            },
+            resetOnSuccess: false,
+          }),
+        );
 
       const response = await firstValueFrom(instance);
 
@@ -98,5 +134,19 @@ export class LocationService {
     }
   }
 
-  async storeLocationCache() {}
+  async storeLocationCache(data: HydratedTrafficCamData[]) {
+    const eventArr = [];
+
+    for (const item of data) {
+      const event = new UpdateLocationCacheEvent();
+      event.uniqueKey = `${item.location.latitude}_${item.location.longitude}`;
+      event.lat = item.location.latitude;
+      event.long = item.location.longitude;
+      event.name = item.location_name;
+
+      eventArr.push(event);
+    }
+
+    this.eventEmitter.emit('location-cache.update', eventArr);
+  }
 }

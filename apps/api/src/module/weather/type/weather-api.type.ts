@@ -1,14 +1,16 @@
+import { CoordinatesType } from '@/common/type/global';
+
 export type WeatherApiResponse = {
   area_metadata: AreaMetadataData[];
   items: WeatherItemsData[];
 };
 
-type AreaMetadataData = {
+export type AreaMetadataData = {
   name: string;
   label_location: CoordinatesType;
 };
 
-type WeatherItemsData = {
+export type WeatherItemsData = {
   update_timestamp: string;
   timestamp: string;
   valid_period: {
@@ -18,7 +20,7 @@ type WeatherItemsData = {
   forecasts: ForecastData[];
 };
 
-type ForecastData = {
+export type ForecastData = {
   area: string;
   forecast: string;
 };

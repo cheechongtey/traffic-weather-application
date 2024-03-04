@@ -7,8 +7,8 @@ export default class GetWeatherQuery {
   dateTime: string;
 
   @IsNotEmpty()
-  lat: string;
+  latitude: number;
 
   @IsNotEmpty()
-  long: string;
+  longitude: number;
 }

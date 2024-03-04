@@ -10,10 +10,7 @@ export type TrafficLocationItemData = {
 export type TrafficCameraData = {
   timestamp: string;
   image: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
+  location: CoordinatesType;
   camera_id: string;
   image_metadata: {
     height: number;

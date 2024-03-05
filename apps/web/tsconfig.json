@@ -3,8 +3,15 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"] // enables us to use @components/MyComponent
+      "@/*": [
+        "src/*"
+      ] // enables us to use @components/MyComponent
     },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",

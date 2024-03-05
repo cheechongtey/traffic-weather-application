@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DatePicker } from '../ui/date-picker';
 import { TimePicker } from '../ui/time-picker/time-picker';
 import { Label } from '@radix-ui/react-label';
@@ -23,15 +23,18 @@ const formSchema = z.object({
   time: z.date(),
 });
 
-const FormSection = () => {
+const FormSection = ({
+  onFetchLocation,
+  isFetching,
+}: {
+  onFetchLocation: (datetime: string) => void;
+  isFetching: boolean;
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // defaultValues: {
-    //   username: '',
-    // },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    onFetchLocation('2024-01-03T13:00:00');
   };
 
   return (
@@ -39,37 +42,19 @@ const FormSection = () => {
       <div className='container py-6 border-b'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <div className='flex gap-10 items-end'>
-              <div className='flex gap-4 md:gap-6'>
-                <div className='text-sm'>
-                  <FormField
-                    control={form.control}
-                    name='date'
-                    render={({ field }) => (
-                      <FormItem className='flex flex-col'>
-                        <FormLabel className='text-xs'>
-                          Please select a date and time
-                        </FormLabel>
-                        <FormControl>
-                          <DatePicker
-                            btnClassName='h-full !mt-1'
-                            date={field.value}
-                            setDate={field.onChange}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+            <div className='flex gap-4 md:gap-6 mb-6'>
+              <div className='text-sm'>
                 <FormField
                   control={form.control}
-                  name='time'
+                  name='date'
                   render={({ field }) => (
-                    <FormItem className='flex flex-col gap-1'>
+                    <FormItem className='flex flex-col'>
+                      <FormLabel className='text-xs'>
+                        Please select a date and time
+                      </FormLabel>
                       <FormControl>
-                        <TimePicker
+                        <DatePicker
+                          btnClassName='h-full !mt-1'
                           date={field.value}
                           setDate={field.onChange}
                         />
@@ -79,8 +64,23 @@ const FormSection = () => {
                   )}
                 />
               </div>
-              <Button>Submit</Button>
+
+              <FormField
+                control={form.control}
+                name='time'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col gap-1'>
+                    <FormControl>
+                      <TimePicker date={field.value} setDate={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
+            <Button className='!mt-0' disabled={isFetching}>
+              Submit
+            </Button>
           </form>
         </Form>
       </div>

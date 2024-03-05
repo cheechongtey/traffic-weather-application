@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
+
 import { DatePicker } from '../ui/date-picker';
 import { TimePicker } from '../ui/time-picker/time-picker';
-import { Label } from '@radix-ui/react-label';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
   Form,
@@ -24,17 +25,22 @@ const formSchema = z.object({
 });
 
 const FormSection = ({
-  onFetchLocation,
+  onChangeDateTime,
   isFetching,
 }: {
-  onFetchLocation: (datetime: string) => void;
+  onChangeDateTime: (datetime: string) => void;
   isFetching: boolean;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    onFetchLocation('2024-01-03T13:00:00');
+    const { date, time } = values;
+    const formattedDate = format(date, 'yyyy-MM-dd');
+    const formattedTime = format(time, 'HH:mm:ss');
+    const dateTime = formattedDate + 'T' + formattedTime;
+
+    onChangeDateTime(dateTime);
   };
 
   return (
@@ -42,7 +48,7 @@ const FormSection = ({
       <div className='container py-6 border-b'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <div className='flex gap-4 md:gap-6 mb-6'>
+            <div className='flex flex-col min-[420px]:flex-row gap-4 md:gap-6 mb-6'>
               <div className='text-sm'>
                 <FormField
                   control={form.control}
@@ -50,11 +56,11 @@ const FormSection = ({
                   render={({ field }) => (
                     <FormItem className='flex flex-col'>
                       <FormLabel className='text-xs'>
-                        Please select a date and time
+                        Please select a date time
                       </FormLabel>
                       <FormControl>
                         <DatePicker
-                          btnClassName='h-full !mt-1'
+                          btnClassName='h-full !mt-1 w-full min-[400px]:w-[180px] sm:w-[280px]'
                           date={field.value}
                           setDate={field.onChange}
                         />

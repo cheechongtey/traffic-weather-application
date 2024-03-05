@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 export default function SubLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute='class' defaultTheme='light' enableSystem>
+    <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
       <Header />
       <main>{children}</main>
       <Toaster />

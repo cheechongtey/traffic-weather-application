@@ -8,7 +8,7 @@ export default async function Header() {
     report: 'Report',
   };
   return (
-    <header className='h-20 w-full'>
+    <header className='h-20 w-full shadow-md border-b'>
       <div className='container h-full'>
         <Navbar headerText={headerText} />
       </div>

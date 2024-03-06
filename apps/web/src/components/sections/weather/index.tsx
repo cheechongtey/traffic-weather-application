@@ -13,8 +13,8 @@ const WeatherSection = ({
   className?: string;
 }) => {
   return (
-    <Card className={cn('w-full md:max-w-[300px]', className)}>
-      <CardContent className='p-4'>
+    <Card className={cn('w-full md:max-w-[300px] h-fit', className)}>
+      <CardContent className='p-6'>
         <h3 className='text-md font-bold mb-4'>Weather Forecast</h3>
         <div>
           {data.map((x, key) => (

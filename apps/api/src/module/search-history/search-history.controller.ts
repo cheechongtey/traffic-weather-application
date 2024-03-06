@@ -20,9 +20,12 @@ export class SearchHistoryController {
   async getReport(@Query() query: GetDateTimeQuery, @Res() res: Response) {
     const { dateTime } = query;
 
-    const top10Report = await this.service.getSearchHistory(dateTime);
-    return res.status(HttpStatus.OK).json({
-      top10Report,
-    });
+    const reportA = this.service.getRecentSearchHistory();
+    const reportB = this.service.getSearchHistory(dateTime);
+
+    const [recentSearch, topSearch] = await Promise.all([reportA, reportB]);
+    // console.log(data);
+
+    return res.status(HttpStatus.OK).json({ recentSearch, topSearch });
   }
 }

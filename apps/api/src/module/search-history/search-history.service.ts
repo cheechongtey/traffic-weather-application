@@ -13,6 +13,22 @@ export class SearchHistoryService {
     });
   }
 
+  async getRecentSearchHistory() {
+    try {
+      // Query the database
+      const searchHistory = await this.prisma.searchHistory.findMany({
+        take: 10,
+        orderBy: {
+          id: 'desc',
+        },
+      });
+
+      return searchHistory;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async getSearchHistory(date: string) {
     // Convert the date string to a Date object
     try {
@@ -37,10 +53,5 @@ export class SearchHistoryService {
     } catch (error) {
       console.log(error);
     }
-
-    // Format the datetime to 'YYYY-MM-DD HH'
-    // searchHistory.forEach((item) => {
-    //   item.search_date = item.datetime.toISOString().slice(0, 13);
-    // });
   }
 }

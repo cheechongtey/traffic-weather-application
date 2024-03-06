@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import FormSection from './form';
 import Location from './location';
 import WeatherSection from './weather';
@@ -7,15 +7,23 @@ import { endpoints } from '@/lib/endpoints';
 import { TrafficCameraData } from '@/common/type/location';
 import { ForecastData } from '@/common/type/weather';
 import { cn } from '@/lib/utils';
+import CameraSection from './camera';
 
 const Listing = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isForecastFetching, setIsForecastFetching] = useState<boolean>(false);
   const [showForecast, setShowForecast] = useState<boolean>(false);
   const [dateTime, setDateTime] = useState<string>('');
-  const [selectedIndex, setSelectedIndex] = useState<number>();
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [locationData, setLocationData] = useState<TrafficCameraData[]>([]);
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
+
+  const selectedLocationData = useMemo(() => {
+    if (selectedIndex === null) {
+      return null;
+    }
+    return locationData[selectedIndex];
+  }, [locationData, selectedIndex]);
 
   const onFetchLocation = async (dateTime: string) => {
     setIsFetching(true);
@@ -61,21 +69,15 @@ const Listing = () => {
       <FormSection onFetchLocation={onFetchLocation} isFetching={isFetching} />
       <section>
         <div className='container py-6 border-b'>
-          <div className='flex flex-col md:flex-row gap-8'>
-            <Location
-              locationData={locationData}
-              selectedIndex={selectedIndex}
-              isFetching={isFetching}
-              onSelectLocation={onSelectLocation}
-            />
-            <WeatherSection
-              isFetching={isForecastFetching}
-              data={forecastData}
-              className={cn({
-                'md:hidden': !Boolean(showForecast),
-              })}
-            />
-          </div>
+          <Location
+            locationData={locationData}
+            forecastData={forecastData}
+            selectedIndex={selectedIndex}
+            isFetching={isFetching}
+            isForecastFetching={isForecastFetching}
+            showForecast={showForecast}
+            onSelectLocation={onSelectLocation}
+          />
         </div>
       </section>
     </>

@@ -19,10 +19,6 @@ export function LocationPagination({
   totalPages: number;
   onChangePage: (index: number) => void;
 }) {
-  const pagesArr = useMemo(() => {
-    return Array.from({ length: totalPages }, (_, index) => index + 1);
-  }, [totalPages]);
-
   const visiblePagesArr = useMemo(() => {
     return getPaginationRange(activeIndex, totalPages);
   }, [totalPages, activeIndex]);

@@ -25,10 +25,10 @@ const formSchema = z.object({
 });
 
 const FormSection = ({
-  onChangeDateTime,
+  onFetchLocation,
   isFetching,
 }: {
-  onChangeDateTime: (datetime: string) => void;
+  onFetchLocation: (dateTime: string) => void;
   isFetching: boolean;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,7 +40,7 @@ const FormSection = ({
     const formattedTime = format(time, 'HH:mm:ss');
     const dateTime = formattedDate + 'T' + formattedTime;
 
-    onChangeDateTime(dateTime);
+    onFetchLocation(dateTime);
   };
 
   return (

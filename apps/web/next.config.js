@@ -3,4 +3,7 @@ module.exports = {
   experimental: {
     serverActions: true,
   },
+  images: {
+    domains: ['images.data.gov.sg'],
+  },
 };

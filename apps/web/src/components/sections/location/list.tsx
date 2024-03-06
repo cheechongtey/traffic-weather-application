@@ -3,7 +3,7 @@
 import { TrafficCameraData } from '@/common/type/location';
 import LocationCard from '@/components/ui/location-card';
 import React, { useMemo, useState } from 'react';
-import { LocationPagination } from './pagination';
+import { CustomPagination } from '@/components/ui/custom-pagination';
 import { calculateTotalPages, cn, paginateData } from '@/lib/utils';
 
 const LocationList = ({
@@ -47,7 +47,7 @@ const LocationList = ({
           />
         ))}
       </div>
-      <LocationPagination
+      <CustomPagination
         activeIndex={activeIndex}
         onChangePage={setActiveIndex}
         totalPages={totalPages}

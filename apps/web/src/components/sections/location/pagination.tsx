@@ -52,7 +52,7 @@ export function LocationPagination({
           <PaginationPrevious onClick={onPrev} />
         </PaginationItem>
         {visiblePagesArr.map((x) => (
-          <PaginationItem>
+          <PaginationItem key={`pagination_${x}`}>
             <PaginationLink
               onClick={(e) => onPageClick(e, x)}
               isActive={x === activeIndex}

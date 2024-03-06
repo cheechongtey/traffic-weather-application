@@ -16,9 +16,12 @@ const WeatherSection = ({
     <Card className={cn('w-full md:max-w-[300px]', className)}>
       <CardContent className='p-4'>
         <h3 className='text-md font-bold mb-4'>Weather Forecast</h3>
-        <div className=''>
-          {data.map((x) => (
-            <div className='flex justify-between text-slate-300 text-sm'>
+        <div>
+          {data.map((x, key) => (
+            <div
+              className='flex justify-between text-slate-300 text-sm'
+              key={key}
+            >
               <span>{x.area}</span>
               <span>{x.forecast}</span>
             </div>

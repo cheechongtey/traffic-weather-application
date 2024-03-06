@@ -10,7 +10,7 @@ import {
 import { getPaginationRange } from '@/lib/utils';
 import React, { useMemo, useState } from 'react';
 
-export function LocationPagination({
+export function CustomPagination({
   activeIndex,
   totalPages,
   onChangePage,

@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import { z } from 'zod';
 
 import { DatePicker } from '../ui/date-picker';
 import { TimePicker } from '../ui/time-picker/time-picker';
@@ -17,8 +18,6 @@ import {
 } from '../ui/form';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
-import { z } from 'zod';
-import dayjs from 'dayjs';
 
 const formSchema = z.object({
   date: z.date(),
@@ -26,23 +25,26 @@ const formSchema = z.object({
 });
 
 const FormSection = ({
-  onFormSubmitCallback,
   isFetching,
+  defaultDateTime,
+  onFormSubmitCallback,
 }: {
-  onFormSubmitCallback: (dateTime: string) => void;
   isFetching: boolean;
+  defaultDateTime?: Date;
+  onFormSubmitCallback: (dateTime: string) => void;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      time: dayjs().hour(0).minute(0).second(0).toDate(),
+      date: dayjs(defaultDateTime).toDate(),
+      time: dayjs(defaultDateTime).toDate(),
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { date, time } = values;
-    const formattedDate = format(date, 'yyyy-MM-dd');
-    const formattedTime = format(time, 'HH:mm:ss');
+    const formattedDate = dayjs(date).format('YYYY-MM-DD');
+    const formattedTime = dayjs(time).format('HH:mm:ss');
     const dateTime = formattedDate + 'T' + formattedTime;
 
     onFormSubmitCallback(dateTime);

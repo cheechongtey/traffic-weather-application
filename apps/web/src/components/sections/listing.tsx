@@ -1,13 +1,11 @@
 'use client';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import dayjs from 'dayjs';
+
 import FormSection from './form';
 import Location from './location';
-import WeatherSection from './weather';
-import { endpoints } from '@/lib/endpoints';
 import { TrafficCameraData } from '@/common/type/location';
 import { ForecastData } from '@/common/type/weather';
-import { cn } from '@/lib/utils';
-import CameraSection from './camera';
 import Report from './report';
 import { ReportData } from '@/common/type/report/type';
 import {
@@ -15,6 +13,8 @@ import {
   onFetchReportApi,
   onFetchWeatherApi,
 } from '@/actions/api';
+
+const DEFAULT_DATE_TIME = dayjs('2024-02-29 00:00:00').toDate();
 
 const Listing = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -81,11 +81,21 @@ const Listing = () => {
     onFetchReport(dateTime);
   };
 
+  useEffect(() => {
+    const formattedDate = dayjs(DEFAULT_DATE_TIME).format('YYYY-MM-DD');
+    const formattedTime = dayjs(DEFAULT_DATE_TIME).format('HH:mm:ss');
+    const dateTime = formattedDate + 'T' + formattedTime;
+
+    onFetchLocation(dateTime);
+    onFetchReport(dateTime);
+  }, []);
+
   return (
     <>
       <FormSection
-        onFormSubmitCallback={onFormSubmitCallback}
         isFetching={isFetching}
+        defaultDateTime={DEFAULT_DATE_TIME}
+        onFormSubmitCallback={onFormSubmitCallback}
       />
       <section>
         <div className='container py-6 border-b'>

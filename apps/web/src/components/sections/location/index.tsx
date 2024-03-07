@@ -1,13 +1,8 @@
 import React from 'react';
-import LocationCard from '@/components/ui/location-card';
 import { TrafficCameraData } from '@/common/type/location';
 import { Loader2 } from 'lucide-react';
-import { endpoints } from '@/lib/endpoints';
 import LocationList from './list';
 import { ForecastData } from '@/common/type/weather';
-import WeatherSection from '../weather';
-import { cn } from '@/lib/utils';
-import CameraSection from '../camera';
 
 const Location = ({
   locationData,

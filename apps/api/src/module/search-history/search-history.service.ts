@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../persistence/prisma/prisma.service';
 import { MostSearchByDateTime, Prisma } from '@prisma/client';
 import dayjs from 'dayjs';
+import { get } from 'radash';
 
 @Injectable()
 export class SearchHistoryService {
@@ -70,7 +71,7 @@ export class SearchHistoryService {
         LIMIT 1`,
         );
 
-      return mostSearched;
+      return get(mostSearched, '0', null);
     } catch (error) {
       console.log(error);
       return [];

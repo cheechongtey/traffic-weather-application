@@ -29,7 +29,7 @@ export default function Navbar({
         />
         <p>ChadNext</p>
       </Link>
-      <div className='hidden items-center gap-12 lg:flex 2xl:gap-16'>
+      {/* <div className='hidden items-center gap-12 lg:flex 2xl:gap-16'>
         <div className='space-x-4 text-center text-md leading-loose text-muted-foreground md:text-left'>
           <Link
             href='/'
@@ -70,7 +70,7 @@ export default function Navbar({
             </div>
           </div>
         </SheetContent>
-      </Sheet>
+      </Sheet> */}
     </nav>
   );
 }

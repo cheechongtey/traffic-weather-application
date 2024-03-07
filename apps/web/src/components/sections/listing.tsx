@@ -20,7 +20,7 @@ const Listing = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [locationData, setLocationData] = useState<TrafficCameraData[]>([]);
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
-  const [reportData, setReportData] = useState<ReportData[]>([]);
+  const [reportData, setReportData] = useState<ReportData | null>(null);
 
   const selectedLocationData = useMemo(() => {
     if (selectedIndex === null) {
@@ -105,7 +105,7 @@ const Listing = () => {
           />
         </div>
       </section>
-      <Report />
+      <Report data={reportData} isFetching={isFetchingReport} />
     </>
   );
 };

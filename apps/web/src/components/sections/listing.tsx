@@ -8,15 +8,19 @@ import { TrafficCameraData } from '@/common/type/location';
 import { ForecastData } from '@/common/type/weather';
 import { cn } from '@/lib/utils';
 import CameraSection from './camera';
+import Report from './report';
+import { ReportData } from '@/common/type/report/type';
 
 const Listing = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [isForecastFetching, setIsForecastFetching] = useState<boolean>(false);
+  const [isFetchingReport, setIsFetchingReport] = useState<boolean>(false);
   const [showForecast, setShowForecast] = useState<boolean>(false);
   const [dateTime, setDateTime] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [locationData, setLocationData] = useState<TrafficCameraData[]>([]);
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
+  const [reportData, setReportData] = useState<ReportData[]>([]);
 
   const selectedLocationData = useMemo(() => {
     if (selectedIndex === null) {
@@ -38,6 +42,19 @@ const Listing = () => {
 
     setTimeout(() => {
       setIsFetching(false);
+    }, 1500);
+  };
+
+  const onFetchReport = async (dateTime: string) => {
+    setIsFetchingReport(true);
+    const searchParams = new URLSearchParams({ dateTime });
+    const resp = await fetch(`${endpoints.report}?${searchParams}`);
+    const reportData = await resp.json();
+
+    setReportData(reportData);
+
+    setTimeout(() => {
+      setIsFetchingReport(false);
     }, 1500);
   };
 
@@ -64,9 +81,17 @@ const Listing = () => {
     }, 1500);
   };
 
+  const onFormSubmitCallback = (dateTime: string) => {
+    onFetchLocation(dateTime);
+    onFetchReport(dateTime);
+  };
+
   return (
     <>
-      <FormSection onFetchLocation={onFetchLocation} isFetching={isFetching} />
+      <FormSection
+        onFormSubmitCallback={onFormSubmitCallback}
+        isFetching={isFetching}
+      />
       <section>
         <div className='container py-6 border-b'>
           <Location
@@ -80,6 +105,7 @@ const Listing = () => {
           />
         </div>
       </section>
+      <Report />
     </>
   );
 };

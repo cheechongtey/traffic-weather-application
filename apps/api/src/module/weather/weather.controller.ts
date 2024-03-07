@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  HttpStatus,
   Query,
   Res,
   UsePipes,
@@ -39,6 +38,6 @@ export class WeatherController {
       latitude,
       longitude,
     });
-    return res.status(HttpStatus.OK).json(resp);
+    return res.json(resp);
   }
 }

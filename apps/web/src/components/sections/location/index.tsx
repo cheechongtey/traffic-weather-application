@@ -21,47 +21,36 @@ const Location = ({
   locationData: TrafficCameraData[];
   forecastData: ForecastData[];
   selectedIndex: number;
+  isFetching: boolean;
+  isForecastFetching: boolean;
+  showForecast: boolean;
   onSelectLocation: (
     index: number,
     latitude: number,
     longitude: number
   ) => void;
-  isFetching: boolean;
-  isForecastFetching: boolean;
-  showForecast: boolean;
 }) => {
   return (
     <div className='flex-1'>
       <h3 className='text-xl font-bold mb-6'>Popular Locations</h3>
-      <div className='flex flex-col md:flex-row gap-6'>
-        {isFetching ? (
-          <Loader2 className='mr-2 h-8 w-8 animate-spin' />
-        ) : (
-          <>
-            {locationData.length !== 0 ? (
-              <LocationList
-                locationData={locationData}
-                onSelectLocation={onSelectLocation}
-                selectedIndex={selectedIndex}
-              />
-            ) : (
-              <p className='text-sm italic'>No locations found</p>
-            )}
-          </>
-        )}
-        <WeatherSection
-          isFetching={isForecastFetching}
-          data={forecastData}
-          className={cn({
-            hidden: !Boolean(showForecast),
-          })}
-        />
-      </div>
-      <div>
-        {locationData.length !== 0 && !isFetching && (
-          <CameraSection locationData={locationData} />
-        )}
-      </div>
+      {isFetching ? (
+        <Loader2 className='mr-2 h-8 w-8 animate-spin' />
+      ) : (
+        <>
+          {locationData.length !== 0 ? (
+            <LocationList
+              locationData={locationData}
+              onSelectLocation={onSelectLocation}
+              selectedIndex={selectedIndex}
+              forecastData={forecastData}
+              isForecastFetching={isForecastFetching}
+              showForecast={showForecast}
+            />
+          ) : (
+            <p className='text-sm italic'>No locations found</p>
+          )}
+        </>
+      )}
     </div>
   );
 };

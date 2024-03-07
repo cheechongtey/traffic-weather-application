@@ -1,7 +1,9 @@
 import { ForecastData } from '@/common/type/weather';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 import React from 'react';
+import WeatherList from './list';
 
 const WeatherSection = ({
   isFetching,
@@ -13,19 +15,23 @@ const WeatherSection = ({
   className?: string;
 }) => {
   return (
-    <Card className={cn('w-full md:max-w-[300px] h-fit', className)}>
+    <Card className={cn('w-full md:flex-[0_0_250px] h-fit', className)}>
       <CardContent className='p-6'>
         <h3 className='text-md font-bold mb-4'>Weather Forecast</h3>
         <div>
-          {data.map((x, key) => (
-            <div
-              className='flex justify-between text-slate-300 text-sm'
-              key={key}
-            >
-              <span>{x.area}</span>
-              <span>{x.forecast}</span>
-            </div>
-          ))}
+          {isFetching ? (
+            <Loader2 className='w-4 h-4 animate-spin' />
+          ) : (
+            <>
+              {data.length !== 0 ? (
+                <WeatherList data={data} />
+              ) : (
+                <p className='text-xs'>
+                  Click on the location to show weather forecast
+                </p>
+              )}
+            </>
+          )}
         </div>
       </CardContent>
     </Card>

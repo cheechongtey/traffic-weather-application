@@ -26,10 +26,10 @@ const formSchema = z.object({
 });
 
 const FormSection = ({
-  onFetchLocation,
+  onFormSubmitCallback,
   isFetching,
 }: {
-  onFetchLocation: (dateTime: string) => void;
+  onFormSubmitCallback: (dateTime: string) => void;
   isFetching: boolean;
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -38,14 +38,14 @@ const FormSection = ({
       time: dayjs().hour(0).minute(0).second(0).toDate(),
     },
   });
-  console.log(form);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { date, time } = values;
     const formattedDate = format(date, 'yyyy-MM-dd');
     const formattedTime = format(time, 'HH:mm:ss');
     const dateTime = formattedDate + 'T' + formattedTime;
 
-    onFetchLocation(dateTime);
+    onFormSubmitCallback(dateTime);
   };
 
   return (

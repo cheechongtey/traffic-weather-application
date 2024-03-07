@@ -18,6 +18,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { z } from 'zod';
+import dayjs from 'dayjs';
 
 const formSchema = z.object({
   date: z.date(),
@@ -33,7 +34,11 @@ const FormSection = ({
 }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      time: dayjs().hour(0).minute(0).second(0).toDate(),
+    },
   });
+  console.log(form);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { date, time } = values;
     const formattedDate = format(date, 'yyyy-MM-dd');

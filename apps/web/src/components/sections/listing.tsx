@@ -10,6 +10,11 @@ import { cn } from '@/lib/utils';
 import CameraSection from './camera';
 import Report from './report';
 import { ReportData } from '@/common/type/report/type';
+import {
+  onFetchLocationApi,
+  onFetchReportApi,
+  onFetchWeatherApi,
+} from '@/actions/api';
 
 const Listing = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -31,9 +36,7 @@ const Listing = () => {
 
   const onFetchLocation = async (dateTime: string) => {
     setIsFetching(true);
-    const searchParams = new URLSearchParams({ dateTime });
-    const resp = await fetch(`${endpoints.traffic}?${searchParams}`);
-    const locationData = await resp.json();
+    const locationData = await onFetchLocationApi(dateTime);
 
     setLocationData(locationData);
     setForecastData([]);
@@ -47,9 +50,7 @@ const Listing = () => {
 
   const onFetchReport = async (dateTime: string) => {
     setIsFetchingReport(true);
-    const searchParams = new URLSearchParams({ dateTime });
-    const resp = await fetch(`${endpoints.report}?${searchParams}`);
-    const reportData = await resp.json();
+    const reportData = await onFetchReportApi(dateTime);
 
     setReportData(reportData);
 
@@ -65,13 +66,7 @@ const Listing = () => {
   ) => {
     setSelectedIndex(index);
     setIsForecastFetching(true);
-    const searchParams = new URLSearchParams({
-      dateTime,
-      latitude: latitude.toString(),
-      longitude: longitude.toString(),
-    });
-    const resp = await fetch(`${endpoints.weather}?${searchParams}`);
-    const data: ForecastData[] = await resp.json();
+    const data = await onFetchWeatherApi(dateTime, latitude, longitude);
 
     setForecastData(data);
     setShowForecast(true);

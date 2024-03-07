@@ -22,10 +22,15 @@ export class SearchHistoryController {
 
     const reportA = this.service.getRecentSearchHistory();
     const reportB = this.service.getSearchHistory(dateTime);
+    const reportC = this.service.getMostSearchedDateTime(dateTime);
 
-    const [recentSearch, topSearch] = await Promise.all([reportA, reportB]);
-    // console.log(data);
-
-    return res.status(HttpStatus.OK).json({ recentSearch, topSearch });
+    const [recentSearch, topSearch, mostSearched] = await Promise.all([
+      reportA,
+      reportB,
+      reportC,
+    ]);
+    return res
+      .status(HttpStatus.OK)
+      .json({ recentSearch, topSearch, mostSearched });
   }
 }

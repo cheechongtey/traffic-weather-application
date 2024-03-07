@@ -41,3 +41,8 @@ view CustomSearchHistoryView {
   location_name        String
   search_count         Int
 }
+
+view MostSearchByDateTime {
+  datetime     DateTime @unique
+  search_count Int
+}

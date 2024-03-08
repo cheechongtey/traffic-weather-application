@@ -3,6 +3,7 @@ import { CoordinatesType } from '@/common/type/global';
 export type WeatherApiResponse = {
   area_metadata: AreaMetadataData[];
   items: WeatherItemsData[];
+  api_info: { status: string };
 };
 
 export type AreaMetadataData = {

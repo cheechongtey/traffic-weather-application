@@ -2,7 +2,6 @@ import endpoints from '@/common/endpoints';
 import { CoordinatesType } from '@/common/type/global';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
 import {
   AreaMetadataData,
   ForecastData,
@@ -19,30 +18,42 @@ export class WeatherService {
     dateTime: string,
     location: CoordinatesType,
   ): Promise<any> {
-    const { area_metadata, items } = await this.fetchWeatherForecastApi(
-      dateTime,
-    );
+    try {
+      const { area_metadata, items } = await this.fetchWeatherForecastApi(
+        dateTime,
+      );
 
-    const forecastData = get<ForecastData[]>(items, '0.forecasts', []);
-    const areasDataIndex = this.lookupClosestAreasKeys(area_metadata, location);
-    const areaForecastData = this.getAreaWeatherForecast(
-      forecastData,
-      areasDataIndex,
-    );
+      const forecastData = get<ForecastData[]>(items, '0.forecasts', []);
+      const areasDataIndex = this.lookupClosestAreasKeys(
+        area_metadata,
+        location,
+      );
+      const areaForecastData = this.getAreaWeatherForecast(
+        forecastData,
+        areasDataIndex,
+      );
 
-    return areaForecastData;
+      return areaForecastData;
+    } catch (e) {
+      return [];
+    }
   }
 
   async fetchWeatherForecastApi(dateTime: string) {
-    const { data } = await firstValueFrom(
-      this.httpService.get<WeatherApiResponse>(endpoints.weatherForecast, {
-        params: {
-          date_time: dateTime,
+    try {
+      const { data } = await this.httpService.axiosRef.get<WeatherApiResponse>(
+        endpoints.weatherForecast,
+        {
+          params: {
+            date_time: dateTime,
+          },
         },
-      }),
-    );
+      );
 
-    return data;
+      return data;
+    } catch (e) {
+      throw e;
+    }
   }
 
   lookupClosestAreasKeys(
@@ -50,13 +61,13 @@ export class WeatherService {
     coordinates: CoordinatesType,
   ) {
     let closestDistance = Infinity;
-    // let closestCoordinatesIndex: string | null = null;
     const arr: string[] = [];
 
     for (const key in areaMedataData) {
       const coord = areaMedataData[key];
       const distance = getDistance(coordinates, coord.label_location);
-      if (distance < closestDistance) {
+      // Show up to 10km weather forecast
+      if (distance < closestDistance && distance <= 10000) {
         closestDistance = distance;
         // closestCoordinatesIndex = key;
         arr.unshift(key);

@@ -26,7 +26,7 @@ export class SearchHistoryService {
 
       return searchHistory;
     } catch (error) {
-      console.log(error);
+      return [];
     }
   }
 
@@ -52,7 +52,7 @@ export class SearchHistoryService {
       // console.log(searchHistory);
       return searchHistory;
     } catch (error) {
-      console.log(error);
+      return [];
     }
   }
 
@@ -73,8 +73,7 @@ export class SearchHistoryService {
 
       return get(mostSearched, '0', null);
     } catch (error) {
-      console.log(error);
-      return [];
+      return {};
     }
   }
 }

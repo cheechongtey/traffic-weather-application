@@ -44,7 +44,7 @@ export class LocationService {
     const locationCache: LocationCache =
       (await this.cacheManager.get('location-list')) ?? {};
 
-    const chunkedCamData = chunkArray<TrafficCameraData>(trafficData, 10);
+    const chunkedCamData = chunkArray<TrafficCameraData>(trafficData, 5);
     const newData = [...chunkedCamData];
 
     const finalData = flatten<HydratedTrafficCamData[][]>(
@@ -114,10 +114,10 @@ export class LocationService {
             return resp.data as ReverseGeocodingJobCompleteApiResponse[];
           }),
           retry({
-            count: 8,
+            count: 12,
             delay(_, retryIndex) {
               console.log(retryIndex);
-              return timer(1500);
+              return timer(2000);
             },
             resetOnSuccess: false,
           }),

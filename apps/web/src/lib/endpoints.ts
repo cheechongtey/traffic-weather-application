@@ -4,4 +4,5 @@ export const endpoints = {
   traffic: `${API_HOST}/api/location`,
   weather: `${API_HOST}/api/weather`,
   report: `${API_HOST}/api/search-history`,
+  recentSearch: `${API_HOST}/api/search-history/recent-search`,
 };

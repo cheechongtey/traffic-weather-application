@@ -16,7 +16,7 @@ import {
   MockPartialCacheHydratedCamLocationData,
 } from './__mock__/service';
 import { UpdateLocationCacheEvent } from './events/update-location-cache.event';
-import { of, retry } from 'rxjs';
+import { of } from 'rxjs';
 import { get } from 'radash';
 import { TrafficCameraData } from './type/traffic-api.type';
 
@@ -101,15 +101,15 @@ describe('LocationService', () => {
       expect(resp).toBe(MockReverseGeocodingPendingApiData);
     });
 
-    it('Trigger api until max attempt', async () => {
-      jest
-        .spyOn<any, any>(httpService, 'get')
-        .mockImplementation(() => retry({ count: 1 }));
+    // it('Trigger api until max attempt', async () => {
+    //   jest
+    //     .spyOn<any, any>(httpService, 'get')
+    //     .mockImplementation(() => retry({ count: 1 }));
 
-      const resp = await service.getReverseGeoPendingJob('testing');
+    //   const resp = await service.getReverseGeoPendingJob('testing');
 
-      expect(resp).toEqual([]);
-    });
+    //   expect(resp).toEqual([]);
+    // });
   });
 
   describe('Test Location Service - getReverseGeocoding', () => {

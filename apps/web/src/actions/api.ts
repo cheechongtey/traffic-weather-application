@@ -41,8 +41,9 @@ export const onFetchWeatherApi = async (
   return data;
 };
 
-export const onFetchRecentSearchApi = async () => {
-  const resp = await fetch(`${endpoints.recentSearch}`);
+export const onFetchRecentSearchApi = async (uuid: string) => {
+  const searchParams = new URLSearchParams({ uuid });
+  const resp = await fetch(`${endpoints.recentSearch}?${searchParams}`);
   const data: Pick<ReportData, 'recentSearch'> = await resp.json();
   return data;
 };

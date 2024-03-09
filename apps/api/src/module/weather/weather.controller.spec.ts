@@ -97,6 +97,7 @@ describe('WeatherController', () => {
     event.datetime = '2024-02-29T00:00:00';
     event.latitude = 1.323957439;
     event.longitude = 103.8728576;
+    event.uuid = '123123';
 
     it('should return 200 with forecast data', async () => {
       const response = mockResponse();
@@ -105,6 +106,7 @@ describe('WeatherController', () => {
           dateTime: '2024-02-29T00:00:00',
           latitude: 1.323957439,
           longitude: 103.8728576,
+          uuid: '123123',
         },
         response,
       );

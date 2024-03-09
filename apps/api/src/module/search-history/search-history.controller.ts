@@ -36,7 +36,7 @@ export class SearchHistoryController {
 
   @Get('/recent-search')
   async getRecentSearch(@Query() query: Request, @Res() res: Response) {
-    const recentSearch = this.service.getRecentSearchHistory(1);
+    const recentSearch = await this.service.getRecentSearchHistory(1);
 
     return res.status(HttpStatus.OK).json(recentSearch);
   }

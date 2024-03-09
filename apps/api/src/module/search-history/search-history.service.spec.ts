@@ -3,6 +3,7 @@ import { SearchHistoryService } from './search-history.service';
 import { PrismaService } from '../persistence/prisma/prisma.service';
 import {
   mostSearched,
+  recentOtherUserSearch,
   recentSearchHistory,
   topSearch,
 } from './__mock__/service';
@@ -116,5 +117,15 @@ describe('SearchHistoryService', () => {
         createdAt: new Date('2024-02-29 00:00:00'),
       },
     });
+  });
+
+  it('Test Recommend message', async () => {
+    jest
+      .spyOn(prisma.searchHistory, 'findFirst')
+      .mockResolvedValue(recentOtherUserSearch);
+
+    expect(await service.getRecommendMessage('100', true)).toBe(
+      recentOtherUserSearch,
+    );
   });
 });

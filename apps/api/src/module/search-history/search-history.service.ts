@@ -14,13 +14,34 @@ export class SearchHistoryService {
     });
   }
 
-  async getRecentSearchHistory(limit: number = 10) {
+  async getRecentSearchHistory() {
     try {
       // Query the database
       const searchHistory = await this.prisma.searchHistory.findMany({
-        take: limit,
+        take: 10,
         orderBy: {
           id: 'desc',
+        },
+      });
+
+      return searchHistory;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async getRecommendMessage(uuid: string, excludeUUID: boolean) {
+    try {
+      // Query the database
+      const searchHistory = await this.prisma.searchHistory.findFirst({
+        orderBy: {
+          id: 'desc',
+        },
+        where: {
+          uuid: {
+            ...(excludeUUID && { not: uuid }),
+            ...(!excludeUUID && { equals: uuid }),
+          },
         },
       });
 

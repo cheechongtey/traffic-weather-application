@@ -8,8 +8,9 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import GetDateTimeQuery from '../location/dto/GetLocationDateTime';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { SearchHistoryService } from './search-history.service';
+import GetRecommendMessageQuery from './dto/GetWeatherQuery';
 
 @Controller('search-history')
 export class SearchHistoryController {
@@ -35,9 +36,22 @@ export class SearchHistoryController {
   }
 
   @Get('/recent-search')
-  async getRecentSearch(@Query() query: Request, @Res() res: Response) {
-    const recentSearch = await this.service.getRecentSearchHistory(1);
+  async getRecentSearch(
+    @Query() query: GetRecommendMessageQuery,
+    @Res() res: Response,
+  ) {
+    const { uuid } = query;
+    const userRecentSearch = await this.service.getRecommendMessage(
+      uuid,
+      false,
+    );
+    const otherRecentSearch = await this.service.getRecommendMessage(
+      uuid,
+      true,
+    );
 
-    return res.status(HttpStatus.OK).json(recentSearch);
+    return res
+      .status(HttpStatus.OK)
+      .json({ userRecentSearch, otherRecentSearch });
   }
 }

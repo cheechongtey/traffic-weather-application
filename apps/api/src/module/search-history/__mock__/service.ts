@@ -159,3 +159,21 @@ export const mostSearched = {
   location_name: 'KPE/PIE, Pan-Island Expressway, Singapore 339630, Singapore',
   uuid: '',
 };
+
+export const recentOtherUserSearch = {
+  id: 39,
+  uuid: '100',
+  datetime: new Date('2024-02-29T00:00:00.000Z'),
+  location_name: 'KPE/PIE, Pan-Island Expressway, Singapore 339630, Singapore',
+  location_coordinates: '1.323957439_103.8728576',
+  createdAt: new Date('2024-03-08T15:17:55.396Z'),
+};
+
+export const recentUserSearch = {
+  id: 39,
+  uuid: '200',
+  datetime: new Date('2024-02-29T00:00:00.000Z'),
+  location_name: 'KPE/PIE, Pan-Island Expressway, Singapore 339630, Singapore',
+  location_coordinates: '1.323957439_103.8728576',
+  createdAt: new Date('2024-03-08T15:17:55.396Z'),
+};

@@ -2,7 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SearchHistoryController } from './search-history.controller';
 import { SearchHistoryService } from './search-history.service';
 import { PrismaService } from '../persistence/prisma/prisma.service';
-import { mostSearched, topSearch } from './__mock__/service';
+import {
+  mostSearched,
+  recentOtherUserSearch,
+  recentSearchHistory,
+  recentUserSearch,
+  topSearch,
+} from './__mock__/service';
 import HttpMocks from 'node-mocks-http';
 
 describe('SearchHistoryController', () => {
@@ -37,7 +43,9 @@ describe('SearchHistoryController', () => {
     it('Integration test for report API', async () => {
       const response = HttpMocks.createResponse();
 
-      jest.spyOn(service, 'getRecentSearchHistory').mockResolvedValue([]);
+      jest
+        .spyOn(service, 'getRecentSearchHistory')
+        .mockResolvedValue(recentSearchHistory);
       jest.spyOn(service, 'getSearchHistory').mockResolvedValue(topSearch);
       jest
         .spyOn(service, 'getMostSearchedDateTime')
@@ -49,9 +57,40 @@ describe('SearchHistoryController', () => {
       expect(service.getSearchHistory).toHaveBeenCalled();
       expect(service.getMostSearchedDateTime).toHaveBeenCalled();
       expect(response._getJSONData()).toStrictEqual({
-        recentSearch: [],
+        recentSearch: recentSearchHistory.map((x) => ({
+          ...x,
+          datetime: x.datetime.toISOString(),
+          createdAt: x.createdAt.toISOString(),
+        })),
         topSearch: topSearch,
         mostSearched: mostSearched,
+      });
+    });
+  });
+
+  describe('Get recent search', () => {
+    it('Integration test for recent search api', async () => {
+      const response = HttpMocks.createResponse();
+
+      jest
+        .spyOn(service, 'getRecommendMessage')
+        .mockResolvedValueOnce(recentUserSearch)
+        .mockResolvedValueOnce(recentOtherUserSearch);
+
+      await controller.getRecentSearch({ uuid: '300' }, response);
+
+      expect(service.getRecommendMessage).toBeCalledTimes(2);
+      expect(response._getJSONData()).toStrictEqual({
+        userRecentSearch: {
+          ...recentUserSearch,
+          datetime: recentUserSearch.datetime.toISOString(),
+          createdAt: recentUserSearch.createdAt.toISOString(),
+        },
+        otherRecentSearch: {
+          ...recentOtherUserSearch,
+          datetime: recentOtherUserSearch.datetime.toISOString(),
+          createdAt: recentOtherUserSearch.createdAt.toISOString(),
+        },
       });
     });
   });

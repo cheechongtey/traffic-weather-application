@@ -1,4 +1,5 @@
 import {
+  RecommendSearch,
   TrafficCameraApiResponse,
   TrafficCameraData,
 } from '@/common/type/location';
@@ -44,6 +45,6 @@ export const onFetchWeatherApi = async (
 export const onFetchRecentSearchApi = async (uuid: string) => {
   const searchParams = new URLSearchParams({ uuid });
   const resp = await fetch(`${endpoints.recentSearch}?${searchParams}`);
-  const data: Pick<ReportData, 'recentSearch'> = await resp.json();
+  const data: RecommendSearch = await resp.json();
   return data;
 };

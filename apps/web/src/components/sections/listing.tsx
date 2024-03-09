@@ -14,6 +14,7 @@ import {
   onFetchWeatherApi,
 } from '@/actions/api';
 import { useSession } from 'next-auth/react';
+import Notification from './notification';
 
 const DEFAULT_DATE_TIME = dayjs('2024-02-29 00:00:00').toDate();
 
@@ -29,10 +30,15 @@ const Listing = () => {
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [isSuggestMode, setIsSuggestMode] = useState<boolean>(false);
   const [suggestedDate, setSuggestedDate] = useState<string>('');
-  const {
-    data: { user },
-  } = useSession();
+  const session = useSession();
 
+  const userId = useMemo(() => {
+    if (!session) {
+      return '';
+    }
+
+    return session.data?.user?.id ?? '';
+  }, [session]);
   const selectedLocationData = useMemo(() => {
     if (selectedIndex === null) {
       return null;
@@ -79,12 +85,7 @@ const Listing = () => {
   ) => {
     setSelectedIndex(index);
     setIsForecastFetching(true);
-    const data = await onFetchWeatherApi(
-      dateTime,
-      latitude,
-      longitude,
-      user.id
-    );
+    const data = await onFetchWeatherApi(dateTime, latitude, longitude, userId);
 
     setForecastData(data);
     setShowForecast(true);
@@ -120,6 +121,7 @@ const Listing = () => {
       />
       <section>
         <div className='container py-6 border-b'>
+          <Notification />
           <Location
             locationData={locationData}
             forecastData={forecastData}

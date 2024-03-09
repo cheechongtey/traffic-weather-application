@@ -1,4 +1,5 @@
 import { CoordinatesType } from '../common';
+import { RecentSearchData } from '../report/type';
 
 export type TrafficCameraData = {
   timestamp: string;
@@ -16,4 +17,9 @@ export type TrafficCameraData = {
 export type TrafficCameraApiResponse = {
   dateTime: string;
   locationData: TrafficCameraData[];
+};
+
+export type RecommendSearch = {
+  otherRecentSearch: RecentSearchData;
+  userRecentSearch: RecentSearchData;
 };

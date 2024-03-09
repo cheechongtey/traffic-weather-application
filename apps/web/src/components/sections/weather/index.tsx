@@ -23,7 +23,7 @@ const WeatherSection = ({
             <Loader2 className='w-4 h-4 animate-spin' />
           ) : (
             <>
-              {data.length !== 0 ? (
+              {data && data.length !== 0 ? (
                 <WeatherList data={data} />
               ) : (
                 <p className='text-xs'>

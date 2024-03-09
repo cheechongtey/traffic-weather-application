@@ -4,17 +4,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
 import { ReportData } from '@/common/type/report/type';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useMemo } from 'react';
 
@@ -54,13 +44,17 @@ export function TabsDemo({ data }: { data: ReportData }) {
       <TabsContent value='recent'>
         <Card>
           <CardHeader>
-            <CardTitle>Most Recent Searches</CardTitle>
+            <CardTitle className='text-lg md:text-xl'>
+              Most Recent Searches
+            </CardTitle>
           </CardHeader>
           <CardContent className='space-y-2 text-left mx-6'>
             <ol className='list-decimal'>
               {(data?.recentSearch ?? []).map((x) => (
                 <li className='mb-2'>
-                  <div className='font-semibold mb-1'>{x.location_name}</div>
+                  <div className='font-semibold mb-1 text-sm md:text-base'>
+                    {x.location_name}
+                  </div>
                   <div className='text-xs italic'>
                     {dayjs(x.datetime).utc().format('DD/MM/YYYY hh:mma')}
                   </div>
@@ -73,13 +67,17 @@ export function TabsDemo({ data }: { data: ReportData }) {
       <TabsContent value='top'>
         <Card>
           <CardHeader>
-            <CardTitle>Top 10 Search on </CardTitle>
+            <CardTitle className='text-lg md:text-xl'>
+              Top 10 Search on{' '}
+            </CardTitle>
           </CardHeader>
           <CardContent className='space-y-2 text-left mx-6'>
             <ol className='list-decimal'>
               {(data?.topSearch ?? []).map((x) => (
                 <li className='mb-2'>
-                  <div className='font-semibold mb-1'>{x.location_name}</div>
+                  <div className='font-semibold mb-1 text-sm md:text-base'>
+                    {x.location_name}
+                  </div>
                   <div className='text-xs italic'>
                     Total{' '}
                     <span className='font-semibold'>{x.search_count} </span>
@@ -95,7 +93,9 @@ export function TabsDemo({ data }: { data: ReportData }) {
       <TabsContent value='most'>
         <Card>
           <CardHeader>
-            <CardTitle>Most Performed Search </CardTitle>
+            <CardTitle className='text-lg md:text-xl'>
+              Most Performed Search{' '}
+            </CardTitle>
           </CardHeader>
           <CardContent className='space-y-2 text-left mx-6'>
             <p className='p-0'>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { DatePicker } from '../ui/date-picker';
 
 const Banner = () => {
   return (

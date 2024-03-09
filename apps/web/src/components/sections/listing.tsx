@@ -110,6 +110,7 @@ const Listing = () => {
 
     onFetchLocation(dateTime);
     onFetchReport(dateTime);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

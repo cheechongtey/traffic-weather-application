@@ -34,6 +34,7 @@ const Notification = () => {
         });
       }, 10000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const Notification = () => {
         fetchNotification();
       }, 5000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   return <Toaster />;

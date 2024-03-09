@@ -12,3 +12,8 @@ export type TrafficCameraData = {
   };
   location_name: string;
 };
+
+export type TrafficCameraApiResponse = {
+  dateTime: string;
+  locationData: TrafficCameraData[];
+};

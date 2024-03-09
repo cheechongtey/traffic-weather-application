@@ -26,6 +26,8 @@ const Listing = () => {
   const [locationData, setLocationData] = useState<TrafficCameraData[]>([]);
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
   const [reportData, setReportData] = useState<ReportData | null>(null);
+  const [isSuggestMode, setIsSuggestMode] = useState<boolean>(false);
+  const [suggestedDate, setSuggestedDate] = useState<string>('');
 
   const selectedLocationData = useMemo(() => {
     if (selectedIndex === null) {
@@ -36,12 +38,19 @@ const Listing = () => {
 
   const onFetchLocation = async (dateTime: string) => {
     setIsFetching(true);
-    const locationData = await onFetchLocationApi(dateTime);
+    const resp = await onFetchLocationApi(dateTime);
+    const isSuggestMode = resp.status && resp.status === 202;
 
-    setLocationData(locationData);
+    setLocationData(resp.locationData ?? []);
+    setIsSuggestMode(isSuggestMode);
+    setSuggestedDate(resp.dateTime);
     setForecastData([]);
     setShowForecast(false);
     setDateTime(dateTime);
+
+    if (isSuggestMode) {
+      onFetchReport(resp.dateTime);
+    }
 
     setTimeout(() => {
       setIsFetching(false);
@@ -77,6 +86,9 @@ const Listing = () => {
   };
 
   const onFormSubmitCallback = (dateTime: string) => {
+    setIsSuggestMode(false);
+    setSuggestedDate('');
+
     onFetchLocation(dateTime);
     onFetchReport(dateTime);
   };
@@ -106,6 +118,8 @@ const Listing = () => {
             isFetching={isFetching}
             isForecastFetching={isForecastFetching}
             showForecast={showForecast}
+            isSuggestMode={isSuggestMode}
+            suggestedDate={suggestedDate}
             onSelectLocation={onSelectLocation}
           />
         </div>

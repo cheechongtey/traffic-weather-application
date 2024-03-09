@@ -1,4 +1,7 @@
-import { TrafficCameraData } from '@/common/type/location';
+import {
+  TrafficCameraApiResponse,
+  TrafficCameraData,
+} from '@/common/type/location';
 import { ReportData } from '@/common/type/report/type';
 import { ForecastData } from '@/common/type/weather';
 import { endpoints } from '@/lib/endpoints';
@@ -6,8 +9,12 @@ import { endpoints } from '@/lib/endpoints';
 export const onFetchLocationApi = async (dateTime: string) => {
   const searchParams = new URLSearchParams({ dateTime });
   const resp = await fetch(`${endpoints.traffic}?${searchParams}`);
-  const locationData: TrafficCameraData[] = await resp.json();
-  return locationData;
+  const response: TrafficCameraApiResponse = await resp.json();
+
+  return {
+    status: resp.status,
+    ...response,
+  };
 };
 
 export const onFetchReportApi = async (dateTime: string) => {

@@ -21,16 +21,16 @@ export class AddSearchHistoryListener {
 
   @OnEvent('search-history.store')
   async addSearchHistory(event: AddSearchHistoryEvent) {
-    const { latitude, longitude, datetime } = event;
+    const { latitude, longitude, datetime, uuid } = event;
     const locationList: Record<string, string> =
       (await this.cacheManager.get('location-list')) ?? {};
     const location_name = locationList[`${latitude}_${longitude}`];
     const dateTime = dayjs.utc(`${datetime}Z`).tz('Asia/Singapore').format();
 
     this.historyService.storeSearchHistory({
-      uuid: '',
-      datetime: dateTime,
+      uuid,
       location_name,
+      datetime: dateTime,
       location_coordinates: `${latitude}_${longitude}`,
     });
   }

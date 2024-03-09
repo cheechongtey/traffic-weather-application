@@ -11,4 +11,7 @@ export default class GetWeatherQuery {
 
   @IsNotEmpty()
   longitude: number;
+
+  @IsNotEmpty()
+  uuid: string;
 }

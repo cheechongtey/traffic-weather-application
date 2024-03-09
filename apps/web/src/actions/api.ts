@@ -27,9 +27,11 @@ export const onFetchReportApi = async (dateTime: string) => {
 export const onFetchWeatherApi = async (
   dateTime: string,
   latitude: number,
-  longitude: number
+  longitude: number,
+  uuid: string
 ) => {
   const searchParams = new URLSearchParams({
+    uuid,
     dateTime,
     latitude: latitude.toString(),
     longitude: longitude.toString(),

@@ -27,11 +27,12 @@ export class WeatherController {
     @Query() query: GetWeatherQuery,
     @Res() res: Response,
   ) {
-    const { dateTime, latitude, longitude } = query;
+    const { dateTime, latitude, longitude, uuid } = query;
     const event = new AddSearchHistoryEvent();
     event.datetime = dateTime;
     event.latitude = latitude;
     event.longitude = longitude;
+    event.uuid = uuid;
     console.log(event);
     this.eventEmitter.emit('search-history.store', event);
 

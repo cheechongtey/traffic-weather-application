@@ -39,6 +39,7 @@ describe('AddSearchHistoryListener', () => {
     event.datetime = '2024-02-29T00:00:00';
     event.latitude = 1.323957439;
     event.longitude = 103.8728576;
+    event.uuid = '123123';
 
     listener.addSearchHistory(event);
 

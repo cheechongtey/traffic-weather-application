@@ -45,6 +45,23 @@ This starter kit is using turborepo and yarn workspaces for monorepo workflow.
 
 ### Prerequisites
 
+- Node version: 20.10.0
+- NPM version : 10.2.3
+
+- You may run the command below if running on MacOS
+
+```
+nvm use
+```
+
+- For window, you may need to install the version or just use nvm
+
+```
+nvm install 20.10.0
+
+nvm use 20.10.0
+```
+
 - Install nps by running
 
 ```

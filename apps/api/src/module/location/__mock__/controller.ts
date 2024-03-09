@@ -1,73 +1,70 @@
-export const MockCacheLocationDateTimeData = {
-  'location-2024-02-29T00:00:00': [
-    {
-      timestamp: '2024-02-28T23:58:40+08:00',
-      image:
-        'https://images.data.gov.sg/api/traffic-images/2024/02/2974c0a5-0074-41db-819d-ca701277c290.jpg',
-      location: {
-        latitude: 1.29531332,
-        longitude: 103.871146,
-      },
-      camera_id: '1001',
-      image_metadata: {
-        height: 240,
-        width: 320,
-        md5: '11740d144065a0c06f0c45ad4b46717c',
-      },
-      location_name: 'KPE/ECP, East Coast Parkway, Singapore 437440, Singapore',
+export const MockCacheLocationDateTimeData = [
+  {
+    timestamp: '2024-02-28T23:58:40+08:00',
+    image:
+      'https://images.data.gov.sg/api/traffic-images/2024/02/2974c0a5-0074-41db-819d-ca701277c290.jpg',
+    location: {
+      latitude: 1.29531332,
+      longitude: 103.871146,
     },
-    {
-      timestamp: '2024-02-28T23:58:40+08:00',
-      image:
-        'https://images.data.gov.sg/api/traffic-images/2024/02/5af2de07-b587-4424-9f10-f70d6ac7240a.jpg',
-      location: {
-        latitude: 1.319541067,
-        longitude: 103.8785627,
-      },
-      camera_id: '1002',
-      image_metadata: {
-        height: 240,
-        width: 320,
-        md5: '8e37bf5643fad67346562530bda12cad',
-      },
-      location_name:
-        'Kallang Bahru, Aljunied Walk, Singapore 387293, Singapore',
+    camera_id: '1001',
+    image_metadata: {
+      height: 240,
+      width: 320,
+      md5: '11740d144065a0c06f0c45ad4b46717c',
     },
-    {
-      timestamp: '2024-02-28T23:58:40+08:00',
-      image:
-        'https://images.data.gov.sg/api/traffic-images/2024/02/1e63e6a9-a775-445d-bb3a-e90fce142a05.jpg',
-      location: {
-        latitude: 1.323957439,
-        longitude: 103.8728576,
-      },
-      camera_id: '1003',
-      image_metadata: {
-        height: 240,
-        width: 320,
-        md5: '91108ebbf3c0fd7174505a123f72dc09',
-      },
-      location_name:
-        'KPE/PIE, Pan-Island Expressway, Singapore 339630, Singapore',
+    location_name: 'KPE/ECP, East Coast Parkway, Singapore 437440, Singapore',
+  },
+  {
+    timestamp: '2024-02-28T23:58:40+08:00',
+    image:
+      'https://images.data.gov.sg/api/traffic-images/2024/02/5af2de07-b587-4424-9f10-f70d6ac7240a.jpg',
+    location: {
+      latitude: 1.319541067,
+      longitude: 103.8785627,
     },
-    {
-      timestamp: '2024-02-28T23:58:40+08:00',
-      image:
-        'https://images.data.gov.sg/api/traffic-images/2024/02/93484984-d10e-4c65-a373-0b60805dcc40.jpg',
-      location: {
-        latitude: 1.319535712,
-        longitude: 103.8750668,
-      },
-      camera_id: '1004',
-      image_metadata: {
-        height: 240,
-        width: 320,
-        md5: 'ee74e87be92a2d095ecb9f2c9c75b62c',
-      },
-      location_name: 'Kallang Way Flyover, Singapore 339695, Singapore',
+    camera_id: '1002',
+    image_metadata: {
+      height: 240,
+      width: 320,
+      md5: '8e37bf5643fad67346562530bda12cad',
     },
-  ],
-};
+    location_name: 'Kallang Bahru, Aljunied Walk, Singapore 387293, Singapore',
+  },
+  {
+    timestamp: '2024-02-28T23:58:40+08:00',
+    image:
+      'https://images.data.gov.sg/api/traffic-images/2024/02/1e63e6a9-a775-445d-bb3a-e90fce142a05.jpg',
+    location: {
+      latitude: 1.323957439,
+      longitude: 103.8728576,
+    },
+    camera_id: '1003',
+    image_metadata: {
+      height: 240,
+      width: 320,
+      md5: '91108ebbf3c0fd7174505a123f72dc09',
+    },
+    location_name:
+      'KPE/PIE, Pan-Island Expressway, Singapore 339630, Singapore',
+  },
+  {
+    timestamp: '2024-02-28T23:58:40+08:00',
+    image:
+      'https://images.data.gov.sg/api/traffic-images/2024/02/93484984-d10e-4c65-a373-0b60805dcc40.jpg',
+    location: {
+      latitude: 1.319535712,
+      longitude: 103.8750668,
+    },
+    camera_id: '1004',
+    image_metadata: {
+      height: 240,
+      width: 320,
+      md5: 'ee74e87be92a2d095ecb9f2c9c75b62c',
+    },
+    location_name: 'Kallang Way Flyover, Singapore 339695, Singapore',
+  },
+];
 
 export const MockTrafficCamApiData = {
   items: [

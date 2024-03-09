@@ -19,11 +19,13 @@ import { UpdateLocationCacheEvent } from './events/update-location-cache.event';
 import { of } from 'rxjs';
 import { get } from 'radash';
 import { TrafficCameraData } from './type/traffic-api.type';
+import { PrismaService } from '../persistence/prisma/prisma.service';
 
 describe('LocationService', () => {
   let service: LocationService;
   let eventEmitter: EventEmitter2;
   let httpService: HttpService;
+  // let prisma: PrismaService;
 
   const httpService2 = {
     get: jest.fn(),
@@ -41,6 +43,7 @@ describe('LocationService', () => {
           },
         },
         LocationService,
+        PrismaService,
         {
           provide: CACHE_MANAGER,
           useValue: {
@@ -58,6 +61,7 @@ describe('LocationService', () => {
     service = module.get<LocationService>(LocationService);
     eventEmitter = module.get<EventEmitter2>(EventEmitter2);
     httpService = module.get<HttpService>(HttpService);
+    // prisma = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
@@ -175,4 +179,20 @@ describe('LocationService', () => {
       expect(eventEmitter.emit).toHaveBeenCalledTimes(1);
     });
   });
+
+  // describe('Test Location Service - getRecentSearch', () => {
+  //   it('With full cache data', async () => {
+  //     jest.spyOn(prisma.searchHistory, 'findFirst').mockResolvedValue({
+  //       datetime: new Date(Date.UTC(1998, 2, 1, 0, 0, 0)),
+  //       location_coordinates: '123',
+  //       uuid: '123',
+  //       id: 1,
+  //       location_name: 'kk',
+  //       createdAt: new Date(),
+  //     });
+  //     const resp = await service.getRecentSearch();
+
+  //     expect(resp).toStrictEqual([]);
+  //   });
+  // });
 });

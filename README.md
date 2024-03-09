@@ -109,6 +109,15 @@ The app should be running at `http://localhost` with reverse proxy configured.
 
 Run `nps` in the terminal to see list of all available commands.
 
+## Assumptions
+
+- I'm using Nextjs instead of just reactjs due to I can skip routing setup and also could utilize the backend to generate session for me.
+- For the reverse geocoding, I'm calling an external API which allow me to do batch reverse geocoding. Hence, we might experience a latency on the first load, due to the reverse geocoding process is executing.
+- I'm making an assumptions all the locations will be fixed across all date/time. Therefore after the reverse geocoding process, I'm storing all the coordinates with the name into the Radis Cache for future mapping purpose.
+- The search history event for store into database only happens upon user click on the location card.
+- For the report apis, I'm using normal view for ReportB and materialized view for ReportC.
+- I'm also doing a client session with NextAuth, so my backend is stateless.
+
 ## Architecture
 
 - Overall architecture

@@ -14,11 +14,11 @@ export class SearchHistoryService {
     });
   }
 
-  async getRecentSearchHistory() {
+  async getRecentSearchHistory(limit: number = 10) {
     try {
       // Query the database
       const searchHistory = await this.prisma.searchHistory.findMany({
-        take: 10,
+        take: limit,
         orderBy: {
           id: 'desc',
         },

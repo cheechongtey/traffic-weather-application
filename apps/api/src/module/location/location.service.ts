@@ -19,6 +19,8 @@ import { chunkArray } from '@/common/helper/utils';
 import endpoints from '@/common/endpoints';
 import { HydratedTrafficCamData, LocationCache } from './type/location.type';
 import { UpdateLocationCacheEvent } from './events/update-location-cache.event';
+import { PrismaService } from '../persistence/prisma/prisma.service';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class LocationService {
@@ -26,6 +28,7 @@ export class LocationService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private eventEmitter: EventEmitter2,
     private readonly httpService: HttpService,
+    private prisma: PrismaService,
   ) {}
 
   async getTrafficLocation(dateTime: string): Promise<TrafficLocationApi> {
@@ -147,5 +150,33 @@ export class LocationService {
     }
 
     this.eventEmitter.emit('location-cache.update', eventArr);
+  }
+
+  async getRecentSearch() {
+    const recentSearch = await this.prisma.searchHistory.findFirst({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!recentSearch) {
+      return {
+        dateTime: '',
+        locationData: [],
+      };
+    }
+
+    const formattedDateTime = dayjs(recentSearch.datetime)
+      .utc()
+      .format('YYYY-MM-DD[T]HH:mm:ss');
+
+    const cacheData = await this.cacheManager.get(
+      `location-${formattedDateTime}`,
+    );
+
+    return {
+      dateTime: formattedDateTime,
+      locationData: cacheData,
+    };
   }
 }

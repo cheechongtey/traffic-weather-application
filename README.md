@@ -117,6 +117,7 @@ Run `nps` in the terminal to see list of all available commands.
 - The search history event for store into database only happens upon user click on the location card.
 - For the report apis, I'm using normal view for ReportB and materialized view for ReportC. I also did a database trigger to refresh the mat-view upon selecting the location card.
 - I'm also doing a client session with NextAuth, so my backend is stateless.
+- I'm using an open source template for all the stack.
 
 ## Architecture
 

@@ -6,6 +6,7 @@ This is fullstack turborepo starter. It comes with the following features.
 - ✅ Nestjs
   - ✅ Env Config with Validation
   - ✅ Prisma
+  - ✅ Redis Cache
 - ✅ NextJS
   - ✅ Tailwind
   - ✅ Redux Toolkit Query
@@ -107,3 +108,21 @@ The app should be running at `http://localhost` with reverse proxy configured.
 ## Other available commands
 
 Run `nps` in the terminal to see list of all available commands.
+
+## Architecture
+
+- Overall architecture
+  ![Screenshot](overall.png)
+
+- How all the module interact with all the tech or stack.
+  - Location Module
+    ![Screenshot](location.png)
+  - Weather Module
+    ![Screenshot](weather.png)
+  - Search History Module
+    ![Screenshot](report.png)
+
+## Limitations
+
+- Test case wasn't fully covered, dropped test case for frontend due to time constraint
+- Logging wasn't in placed as well.

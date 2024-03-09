@@ -4,6 +4,9 @@ import { firstValueFrom, map, retry, timer } from 'rxjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 
 import type {
   TrafficCameraData,
@@ -20,7 +23,9 @@ import endpoints from '@/common/endpoints';
 import { HydratedTrafficCamData, LocationCache } from './type/location.type';
 import { UpdateLocationCacheEvent } from './events/update-location-cache.event';
 import { PrismaService } from '../persistence/prisma/prisma.service';
-import dayjs from 'dayjs';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 @Injectable()
 export class LocationService {

@@ -8,7 +8,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import GetDateTimeQuery from '../location/dto/GetLocationDateTime';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { SearchHistoryService } from './search-history.service';
 
 @Controller('search-history')
@@ -32,5 +32,12 @@ export class SearchHistoryController {
     return res
       .status(HttpStatus.OK)
       .json({ recentSearch, topSearch, mostSearched });
+  }
+
+  @Get('/recent-search')
+  async getRecentSearch(@Query() query: Request, @Res() res: Response) {
+    const recentSearch = this.service.getRecentSearchHistory(1);
+
+    return res.status(HttpStatus.OK).json(recentSearch);
   }
 }

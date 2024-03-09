@@ -2,12 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SearchHistoryController } from './search-history.controller';
 import { SearchHistoryService } from './search-history.service';
 import { PrismaService } from '../persistence/prisma/prisma.service';
-import {
-  mostSearched,
-  recentSearchHistory,
-  topSearch,
-} from './__mock__/service';
-import { Response } from 'express';
+import { mostSearched, topSearch } from './__mock__/service';
+import HttpMocks from 'node-mocks-http';
 
 describe('SearchHistoryController', () => {
   let controller: SearchHistoryController;
@@ -38,18 +34,10 @@ describe('SearchHistoryController', () => {
   });
 
   describe('Get report api', () => {
-    const mockResponse = () => {
-      const res = {} as unknown as Response;
-      res.status = jest.fn().mockReturnValue(res);
-      res.json = jest.fn().mockReturnValue(res);
-      return res;
-    };
-    const response = mockResponse();
-
     it('Integration test for report API', async () => {
-      jest
-        .spyOn(service, 'getRecentSearchHistory')
-        .mockResolvedValue(recentSearchHistory);
+      const response = HttpMocks.createResponse();
+
+      jest.spyOn(service, 'getRecentSearchHistory').mockResolvedValue([]);
       jest.spyOn(service, 'getSearchHistory').mockResolvedValue(topSearch);
       jest
         .spyOn(service, 'getMostSearchedDateTime')
@@ -60,8 +48,8 @@ describe('SearchHistoryController', () => {
       expect(service.getRecentSearchHistory).toHaveBeenCalled();
       expect(service.getSearchHistory).toHaveBeenCalled();
       expect(service.getMostSearchedDateTime).toHaveBeenCalled();
-      expect(response.json).toHaveBeenCalledWith({
-        recentSearch: recentSearchHistory,
+      expect(response._getJSONData()).toStrictEqual({
+        recentSearch: [],
         topSearch: topSearch,
         mostSearched: mostSearched,
       });

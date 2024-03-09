@@ -154,4 +154,8 @@ export const topSearch = [
 export const mostSearched = {
   datetime: '2024-02-29T15:00:00.000Z',
   search_count: 11,
+  id: 41,
+  location_coordinates: '1.323957439_103.8728576',
+  location_name: 'KPE/PIE, Pan-Island Expressway, Singapore 339630, Singapore',
+  uuid: '',
 };

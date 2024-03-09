@@ -110,7 +110,6 @@ export class LocationService {
             if ('status' in resp.data && resp.data.status === 'pending') {
               throw new Error('Maximum attempt on retries');
             }
-
             return resp.data as ReverseGeocodingJobCompleteApiResponse[];
           }),
           retry({

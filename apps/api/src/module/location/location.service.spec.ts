@@ -20,12 +20,15 @@ import { of } from 'rxjs';
 import { get } from 'radash';
 import { TrafficCameraData } from './type/traffic-api.type';
 import { PrismaService } from '../persistence/prisma/prisma.service';
+import { Cache } from 'cache-manager';
+import { MockHydratedData } from './__mock__/controller';
 
 describe('LocationService', () => {
   let service: LocationService;
   let eventEmitter: EventEmitter2;
   let httpService: HttpService;
-  // let prisma: PrismaService;
+  let prisma: PrismaService;
+  let cache: Cache;
 
   const httpService2 = {
     get: jest.fn(),
@@ -61,7 +64,8 @@ describe('LocationService', () => {
     service = module.get<LocationService>(LocationService);
     eventEmitter = module.get<EventEmitter2>(EventEmitter2);
     httpService = module.get<HttpService>(HttpService);
-    // prisma = module.get<PrismaService>(PrismaService);
+    prisma = module.get<PrismaService>(PrismaService);
+    cache = module.get(CACHE_MANAGER);
   });
 
   it('should be defined', () => {
@@ -180,19 +184,33 @@ describe('LocationService', () => {
     });
   });
 
-  // describe('Test Location Service - getRecentSearch', () => {
-  //   it('With full cache data', async () => {
-  //     jest.spyOn(prisma.searchHistory, 'findFirst').mockResolvedValue({
-  //       datetime: new Date(Date.UTC(1998, 2, 1, 0, 0, 0)),
-  //       location_coordinates: '123',
-  //       uuid: '123',
-  //       id: 1,
-  //       location_name: 'kk',
-  //       createdAt: new Date(),
-  //     });
-  //     const resp = await service.getRecentSearch();
+  describe('Test Location Service - getRecentSearch', () => {
+    it('With no record in db', async () => {
+      jest.spyOn(prisma.searchHistory, 'findFirst').mockResolvedValue(null);
+      const resp = await service.getRecentSearch();
 
-  //     expect(resp).toStrictEqual([]);
-  //   });
-  // });
+      expect(resp).toStrictEqual({
+        dateTime: '',
+        locationData: [],
+      });
+    });
+
+    it('With full cache data', async () => {
+      jest.spyOn(prisma.searchHistory, 'findFirst').mockResolvedValue({
+        datetime: new Date(Date.UTC(2024, 2, 29, 0, 0, 0)),
+        location_coordinates: '123',
+        uuid: '123',
+        id: 1,
+        location_name: 'kk',
+        createdAt: new Date(),
+      });
+      jest.spyOn(cache, 'get').mockResolvedValue(MockHydratedData);
+      const resp = await service.getRecentSearch();
+
+      expect(resp).toStrictEqual({
+        dateTime: '2024-03-29T00:00:00',
+        locationData: MockHydratedData,
+      });
+    });
+  });
 });

@@ -48,6 +48,7 @@ This starter kit is using turborepo and yarn workspaces for monorepo workflow.
 
 - Node version: 20.10.0
 - NPM version : 10.2.3
+- Yarn version: 1.22.17
 
 - You may run the command below if running on MacOS
 
